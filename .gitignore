@@ -1,4 +1,14 @@
-# ignore symlink targets' git dirs
-tagd/.git
-tagd-dictionary/.git
+# ignore symlink targets
+tagd
+tagd-dictionary
+
+# tmp file
+*.swp
+*~
+
+# hidden files
+.*
+
+# hidden exceptions
+!.gitignore
 
