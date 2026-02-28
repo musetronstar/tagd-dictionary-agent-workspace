@@ -49,4 +49,8 @@ When uncertain, choose the simpler structure.
 - Keep each VOA sense separate unless the source wording clearly supports a semantic parent-child relation between senses.
 - Prefer the shallowest TAGL rendering that stays close to the VOA wording; do not replace vague source terms like `something` with a more specific parent like `event` unless required.
 - Define prerequisite tags and relators before using them in a statement; TAGL requires valid subject-relator-object structure, not bare English fragments.
+- When defining a namespaced or URI-style tag id with `:`, use the superordinate tag as the prefix and the word as the suffix, for example `event:accident` or `place:across`.
+- Do not add predicates that are not present in the VOA definition unless TAGL requires a fallback.
+- If a more specific subordinate relation is not part of the VOA definition, use `_sub`.
+- If a more specific predicate relation is not part of the VOA definition, use `_rel`.
 - Validate edited `.tagl` files with `tagsh -f <file> -n` after changes.
