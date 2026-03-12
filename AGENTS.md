@@ -122,6 +122,14 @@ When uncertain, choose the simpler structure.
 * TAGL rendering should follow the VOA wording;
   prioritize finding meaningful subordinate relations (hyponym, or identity relations) as most important and taglize into `sub_relator`
   then taglize the following predicate relations.
+* Do not define a sub relation (`>> {relator} {sub_relation} _rel`) for a VOA word just because it is classified
+  as adjective, adverb or preposition. The `_rel` is only appropriate as a fallback when the word
+  functions primarily as a `relator` when no more specific semantic `super_object` available (e.g. `before`, `in`, `for`).
+* When the VOA definition implies a `super_object` that has been previously defined, use that as the `super_object`
+  [for temporal (`time`), spatial (`place`), action (`act`)], etc. — use that as the `super_object`.
+  If there are multiple senses of a VOA word, use URI prefix style to disambiguate
+  Example: `after` = "later" → `time:after _sub time`, not `after _sub _rel`.
+* When the VOA definition use a word in the definition corresponding to  a previously defined tag use the previously defined tag.
 * Define prerequisite tags before using them in a statement; TAGL requires valid subject-relator-object structure, not bare English fragments.
 * Sparse subordinate definitions taken directly from the VOA gloss are acceptable when they preserve the source semantics and avoid unnecessary invented ontology.
 * If a statement is not direct VOA wording or an exact normalization of recurring VOA wording, but is still a justified prerequisite or abstraction, mark that statement inline with `-- reasonable induction`.
