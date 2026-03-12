@@ -99,6 +99,7 @@ When uncertain, choose the simpler structure.
 - Sparse subordinate definitions taken directly from the VOA gloss are acceptable when they preserve the source semantics and avoid unnecessary invented ontology.
 - If a statement is not direct VOA wording or an exact normalization of recurring VOA wording, but is still a justified prerequisite or abstraction, mark that statement inline with `-- reasonable induction`.
 - Prefer TAGL `object` relations over modifiers `<object> = <modifier`: when information can be represented as a meaningful subject-relator-object statement, model it as an object relation instead of a modifier assignment. Then it becomes a tag in the tree rather than just a "data property" Use modifiers mainly for scalar/literal metadata (quantities, strings) where no useful object node or relation is known or intended.
+- In TAGLized VOA definitions, do not use hard tags directly when a VOA word can serve the same function. First derive the VOA word from the hard tag, for example `>> has _sub _has;`, then use the VOA word in subsequent definition statements.
 - When defining a namespaced or URI-style tag id with `:`, use the superordinate tag as the prefix and the word as the suffix, for example `event:accident` or `place:across`.
 - Do not add predicates that are not present in the VOA definition unless TAGL requires a fallback.
 - If a more specific subordinate relation is not part of the VOA definition, use `_sub`.
@@ -120,8 +121,9 @@ While the **next word** is found:
      TAGL validation:
     `$HOME/projects/tagd/tagsh/bin/tagsh -f simple-english.tagl -n`
   4) If validation fails, fix the reported issue(s) and repeat step 3 until validation succeeds.
-  5) Stop after validation succeeds for that one word; do not process additional words unless explicitly asked.
-  6) Show the diff for the successful changes from this processed word.
+  5) If the required tag corresponding to a VOA word cannot be directly match to a TAGL `tagd_pos:` type word, stop before forcing a hard tag into the definition and make recommendations to the user.
+  6) Stop after validation succeeds for that one word; do not process additional words unless explicitly asked.
+  7) Show the diff for the successful changes from this processed word.
 
 - "Process the next N words" means batch mode with the same validation loop:
   1) Repeat the single-word loop N times in top-to-bottom order.
@@ -135,6 +137,5 @@ While the **next word** is found:
   do not continue to additional ids unless explicitly asked.
 
 ---
-
 
 
