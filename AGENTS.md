@@ -10,6 +10,9 @@ This workspace contains symlinks to these repositories:
 
 Tranform (TAGLize) the **commented TAGL entries** in `simple-english.tagl`
 into TAGL **PUT** statements containing the semantic relations of the VOA defintion.
+Use `tagr` as the first-pass structural translator for the VOA word + gloss,
+then use `tagsh` validation plus repository rules to repair and complete the
+candidate TAGL in `simple-english.tagl`.
 
 ### PUT Grammar
 
@@ -77,6 +80,7 @@ When uncertain, choose the simpler structure.
   - ` tagd-dictionarybuild/ngram-freqs.tsv`
 * Avoid inventing new high-level ontology unless necessary.
 * Use hyponymy strategically using `sub_relator`s (identity relations) to shape the tagspace heirarchy for better sense making.
+* Use `tagr` to generate the initial TAGL-shaped candidate from the VOA word + gloss before manually repairing or refining it.
 * If inference beyond the VOA definition is required:
   - In `.tagl`, add an inline `-- reasonable induction` comment on the inferred statement.
   - TODO comments are added by human, do not add unless instructed. Do not modify existing `-- TODO` unless instructed to do so.
@@ -122,6 +126,7 @@ When uncertain, choose the simpler structure.
 * TAGL rendering should follow the VOA wording;
   prioritize finding meaningful subordinate relations (hyponym, or identity relations) as most important and taglize into `sub_relator`
   then taglize the following predicate relations.
+* Treat `tagr` output as a candidate shape, not final truth. Repair it using the file context, existing tags, and the rules in this workspace.
 * Do not define a sub relation (`>> {relator} {sub_relation} _rel`) for a VOA word just because it is classified
   as adjective, adverb or preposition. The `_rel` is only appropriate as a fallback when the word
   functions primarily as a `relator` when no more specific semantic `super_object` available (e.g. `before`, `in`, `for`).
@@ -150,7 +155,25 @@ When uncertain, choose the simpler structure.
 
 While the **next word** is found:
   1) uncomment the **next word** block
-  2) expand the TAGL definition with as:
+  2) pass the VOA word + gloss through `tagr` to generate a first-pass TAGL candidate.
+     Prefer a subject hint when the VOA word should anchor the candidate, for example:
+    `echo "<word> <definition>" | tagr/tagr.py --hint subject=<word>`
+
+    Example commented VOA definition block:
+    ```tagl
+    -->>
+    --identified_as "VOA:age:0"
+    --represents word = "age"
+    --categorized_as noun
+    --has definition = "how old a person or thing is"
+    ```
+
+    We would execute
+
+    echo "age how old a person or thing is" | tagr/tagr.py --hint subject=age
+
+
+  3) repair and expand the TAGL definition from the `tagr` candidate as:
     either:
     one and only one sub relation (identity relation)
     or:
@@ -160,23 +183,23 @@ While the **next word** is found:
     >> <subject> <sub_relator> <object>
        [<relator> <object_list>]
     ```
-  3) Test:
+  4) Test:
      **TAGL validation**:
-    `../tagd/tagsh/bin/tagsh -f simple-english.tagl -n`
-  4) If validation fails, fix the reported issue(s) and repeat step 3 until validation succeeds.
-  5) If the required tag corresponding to a VOA word cannot be directly match to a TAGL `tagd_pos:` type word, stop before forcing a hard tag into the definition and make recommendations to the user.
-  6) Stop after validation succeeds for that one word; do not process additional words unless explicitly asked.
-  7) Show the diff for the successful changes from this processed word.
+    `tagd/tagsh/bin/tagsh -f simple-english.tagl -n`
+  5) If validation fails, fix the reported issue(s) and repeat step 4 until validation succeeds.
+  6) If the required tag corresponding to a VOA word cannot be directly match to a TAGL `tagd_pos:` type word, stop before forcing a hard tag into the definition and make recommendations to the user.
+  7) Stop after validation succeeds for that one word; do not process additional words unless explicitly asked.
+  8) Show the diff for the successful changes from this processed word.
 
 - "Process the next N words" means batch mode with the same validation loop:
   1) Repeat the single-word loop N times in top-to-bottom order.
-  2) After each word translation, run **TAGL validations**.
+  2) For each word, generate a first-pass TAGL candidate with `tagr/`, then repair it according to the workspace rules.
+  3) After each word translation, run **TAGL validations**.
     and fix issues until it succeeds before moving to the next word.
-  3) Continue automatically until all N words are successfully processed.
-  4) Then show one combined diff containing the successful changes for those N words.
+  4) Continue automatically until all N words are successfully processed.
+  5) Then show one combined diff containing the successful changes for those N words.
 * If the selected commented block is a duplicate of an already translated uncommented entry with the same `VOA:id`,
   remove the duplicate commented block, run validation, and then stop;
   do not continue to additional ids unless explicitly asked.
 
 ---
-
