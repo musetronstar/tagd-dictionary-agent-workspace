@@ -120,6 +120,29 @@ That is usually enough.
 
 One mission per step. No all-in-one redesign prompts unless a full redesign is the intent.
 
+When a task explicitly requires TDD sequencing, state the order:
+
+1. unit or in-process integration tests first
+2. implementation to pass those tests
+3. system tests second
+4. task is not complete until all required test layers pass
+
+If a repo defines `make all` as the completion command, `make all` must run the
+full required suite, not just build artifacts.
+
+Prefer repo-owned local fixtures for normal tests over external mutable data
+files. Use external files only for explicit integration coverage.
+
+Mark aggregate make targets like `all`, `tests`, and `clean` as `.PHONY`.
+
+Implement the specified external contract directly.
+Do not preserve wrong internal formats and compensate for them in downstream code or tests.
+
+## Reporting
+
+When a task or user prompt changes one or more files, conclude the report with a suggested
+concise git commit message.
+
 ---
 
 ## Mission Types
